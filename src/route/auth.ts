@@ -5,11 +5,12 @@ import {config, logger} from '../config.js';
 
 export const randomString = () => randomBytes(4).toString('hex');
 
+const oauthHost = process.env.OAUTH_HOST;
+
 nanoServer.route('GET', '/auth', (connection) => {
-  const host = connection.incomingMessage.headers.host;
-  const url = new URL(`https://${host}/${connection.url}`);
+  const url = new URL(`https://${oauthHost}/${connection.url}`);
   const provider = url.searchParams.get('provider');
-  logger.logMethodArgs?.('get-auth', {host, url, provider})
+  logger.logMethodArgs?.('get-auth', {oauthHost, url, provider})
 
   if (provider !== 'github') {
     return {
@@ -25,7 +26,7 @@ nanoServer.route('GET', '/auth', (connection) => {
   });
 
   const authorizationUri = client.authorizeURL({
-    redirect_uri: `https://${host}/callback?provider=${provider}`,
+    redirect_uri: `https://${oauthHost}/callback?provider=${provider}`,
     scope: 'repo,user',
     state: randomString(),
   });
