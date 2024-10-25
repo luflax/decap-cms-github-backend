@@ -2,12 +2,16 @@ import {AuthorizationCode} from 'simple-oauth2';
 import {config, logger} from '../config.js';
 import {nanoServer} from '../lib/nano-server.js'
 
+const oauthHost = process.env.OAUTH_HOST;
+if (oauthHost == undefined) {
+  throw new Error('OAUTH_HOST env var required.');
+}
+
 nanoServer.route('GET', '/callback', async (connection) => {
-  const host = connection.incomingMessage.headers.host;
-  const url = new URL(`https://${host}/${connection.url}`);
+  const url = new URL(`https://${oauthHost}/${connection.url}`);
   const provider = url.searchParams.get('provider');
   const code = url.searchParams.get('code');
-  logger.logMethodArgs?.('get-callback', {host, url, provider})
+  logger.logMethodArgs?.('get-callback', {oauthHost, url, provider})
 
   if (provider !== 'github') {
     return {
@@ -28,7 +32,7 @@ nanoServer.route('GET', '/callback', async (connection) => {
   const client = new AuthorizationCode({auth: config.auth, client: config.client});
   const tokenParams = {
     code,
-    redirect_uri: `https://${host}/callback?provider=${provider}`,
+    redirect_uri: `https://${oauthHost}/callback?provider=${provider}`,
   };
 
   const accessToken = await client.getToken(tokenParams);
