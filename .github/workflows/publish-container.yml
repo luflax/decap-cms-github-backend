@@ -23,7 +23,7 @@ env:
 
 jobs:
   build:
-    if: github.repository_owner == 'njfamirm'
+    if: github.repository_owner == 'luflax'
 
     name: Build Container
     runs-on: ubuntu-latest
@@ -59,8 +59,8 @@ jobs:
           images: name=${{ env.REGISTRY }}/${{ env.USERNAME }}/decap-cms-github-backend,enable=true
 
           labels: |
-            org.opencontainers.image.authors=njfamirm@gmail.com
-            org.opencontainers.image.title=@alwatr/decap-cms-github-backend
+            org.opencontainers.image.authors=luflax34a@gmail.com
+            org.opencontainers.image.title=decap-cms-github-backend
             org.opencontainers.image.description='Self-hosted decap cms github backend'
 
           tags: |
