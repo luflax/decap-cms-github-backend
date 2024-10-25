@@ -6,6 +6,9 @@ import {config, logger} from '../config.js';
 export const randomString = () => randomBytes(4).toString('hex');
 
 const oauthHost = process.env.OAUTH_HOST;
+if (oauthHost == undefined) {
+  throw new Error('OAUTH_HOST env var required.');
+}
 
 nanoServer.route('GET', '/auth', (connection) => {
   const url = new URL(`https://${oauthHost}/${connection.url}`);
